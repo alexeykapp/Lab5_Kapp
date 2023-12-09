@@ -1,25 +1,28 @@
 using Lab5.PageObject;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.DevTools.V118.Runtime;
 
 namespace Lab5
 {
     public class Tests
     {
         public IWebDriver _driver;
+        public CalculatorPage calculator;
         [SetUp]
         public void Setup()
         {
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("--headless");
             _driver = new ChromeDriver(options);
+            calculator = new CalculatorPage(_driver);
             _driver.Navigate().GoToUrl("https://www.globalsqa.com/angularJs-protractor/SimpleCalculator/");
         }
 
         [Test]
         public void EnterValueA()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
+            calculator = new CalculatorPage(_driver);
             calculator.EnterA("1");
             string result = calculator.GetValueA();
             Assert.AreEqual("1", result);
@@ -27,7 +30,6 @@ namespace Lab5
         [Test]
         public void EnterValueB()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterB("2");
             string result = calculator.GetValueB();
             Assert.AreEqual("2", result);
@@ -35,7 +37,7 @@ namespace Lab5
         [Test]
         public void PlusA()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
+            calculator.EnterA("0");
             calculator.ClickPlusA();
             string result = calculator.GetResult();
             Assert.AreEqual("1", result);
@@ -43,7 +45,6 @@ namespace Lab5
         [Test]
         public void PlusB()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.ClickPlusB();
             string result = calculator.GetResult();
             Assert.AreEqual("1", result);
@@ -51,7 +52,6 @@ namespace Lab5
         [Test]
         public void MinusA()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("2");
             calculator.ClickMinusA();
             string result = calculator.GetResult();
@@ -60,7 +60,6 @@ namespace Lab5
         [Test]
         public void MinusB()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterB("2");
             calculator.ClickMinusB();
             string result = calculator.GetResult();
@@ -69,7 +68,6 @@ namespace Lab5
         [Test]
         public void DoublePlusA()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("1");
             calculator.ClickPlusA();
             calculator.ClickPlusA();
@@ -79,7 +77,6 @@ namespace Lab5
         [Test]
         public void DoubleMinusA()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("3");
             calculator.ClickMinusA();
             calculator.ClickMinusA();
@@ -89,7 +86,6 @@ namespace Lab5
         [Test]
         public void OperatorMinus()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("3");
             calculator.EnterB("1");
             calculator.ClickOperation("-");
@@ -99,7 +95,6 @@ namespace Lab5
         [Test]
         public void OperatorUmnogit()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("3");
             calculator.EnterB("1");
             calculator.ClickOperation("*");
@@ -109,7 +104,6 @@ namespace Lab5
         [Test]
         public void OperatorDelit()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("4");
             calculator.EnterB("2");
             calculator.ClickOperation("/");
@@ -119,7 +113,6 @@ namespace Lab5
         [Test]
         public void OperatorPlus()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("4");
             calculator.EnterB("2");
             calculator.ClickOperation("+");
@@ -129,7 +122,6 @@ namespace Lab5
         [Test]
         public void OperatorPlus2()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("4");
             calculator.EnterB("-2");
             calculator.ClickOperation("+");
@@ -148,16 +140,14 @@ namespace Lab5
         [Test]
         public void ResultB()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("4");
             calculator.EnterB("-2");
             string result = calculator.GetResultB();
             Assert.AreEqual("-2", result);
         }
-        [Test]
+        [TestCase()]
         public void OperationUmnogit2()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("-4");
             calculator.EnterB("-2");
             calculator.ClickOperation("*");
@@ -167,13 +157,42 @@ namespace Lab5
         [Test]
         public void OperationDelenieNaNol()
         {
-            CalculatorPage calculator = new CalculatorPage(_driver);
             calculator.EnterA("4");
             calculator.EnterB("0");
             calculator.ClickOperation("/");
             string result = calculator.GetResult();
             Assert.AreEqual("null", result);
+        }fdfd
+        [Test]
+        public void OperationUmnogeniaNaStroku()
+        {
+            calculator.EnterA("4");
+            calculator.EnterB("ghhh");
+            calculator.ClickOperation("*");
+            string result = calculator.GetResult();
+            Assert.AreEqual("null", result);
         }
+        [TestCase("3.5","2","1.75","/")]
+        [TestCase("2.1","3", "6.300000000000001", "*")]
+        [TestCase("1","1.25","2.25","+")]
+        [TestCase("121.25","1.25","120","-")]
+        [TestCase("121.25","1.25","120","-")]
+        [TestCase("hh","222","null","+")]
+        [TestCase("1212 12","331","null","*")]
+        [TestCase("144","44 1","null","+")]
+        [TestCase("21 21","63 2","null","-")]
+        [TestCase("113333", "3232332322323233232", "3.66329919085859e+23", "*")]
+        [TestCase("1,1", "3221", "null", "*")]
+        public void Operation(string a, string b, string resultTest, string operation)
+        {
+            calculator.EnterA(a);
+            calculator.EnterB(b);
+            calculator.ClickOperation(operation);
+            string result = calculator.GetResult();
+            Assert.AreEqual(resultTest, result);
+        }
+
+        //  вещественные числ, путсеык ,некоррук=тные 10e1
         [TearDown] 
         public void TearDown()
         {
