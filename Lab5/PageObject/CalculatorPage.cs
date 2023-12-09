@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +10,7 @@ using OpenQA.Selenium.Support.UI;
 
 namespace Lab5.PageObject
 {
-    internal class CalculatorPage
+    public class CalculatorPage
     {
         private readonly IWebDriver _driver;
         private readonly TimeSpan _timeout = TimeSpan.FromSeconds(5);
@@ -57,7 +57,7 @@ namespace Lab5.PageObject
         }
         public string GetValueA()
         {
-            IWebElement element = _driver.FindElement(By.XPath("//input[@ng-model='a']"));
+            IWebElement element = _driver.FindElement(_a);
             return element.GetAttribute("value");
         }
         public string GetValueB()
@@ -82,13 +82,17 @@ namespace Lab5.PageObject
         }
         public CalculatorPage ClickOperation(string operation)
         {
-            _driver.FindElement(_operation).Click();
+            _driver.FindElement(_operation).Click(); // Send?Keys(opowrTOR);
             _driver.FindElement(By.XPath($".//option[@value='{operation}']")).Click();
             return this;
         }
         public string GetResult()
         {
             return _driver.FindElement(_result).Text.Split(' ').Last();
+        }
+        public string GetFullResult()
+        {
+            return _driver.FindElement(_result).Text;
         }
         public string GetResultA()
         {
